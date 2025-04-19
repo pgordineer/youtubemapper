@@ -13,6 +13,7 @@ export interface VideoInfo {
     playlistId: string; // Updated to use playlistId
     playlistName?: string; // Added to handle playlist names
     marked: boolean;
+    handle?: string; // Added to handle filtering by handle
 }
 
 // Define the type of the raw data from the JSON file
@@ -28,6 +29,7 @@ interface RawVideoInfo {
     playlistId?: string; // Updated to use playlistId
     playlistName?: string; // Made optional to handle missing data
     marked?: boolean; // Made optional to handle missing data
+    handle?: string; // Added to match the new data format
 }
 
 // Parse geocode and filter out invalid entries
@@ -55,6 +57,7 @@ let VideoData = (data as RawVideoInfo[]).map((item) => {
         playlistId: item.playlistId || "unknown", // Default to "unknown" if missing
         playlistName: item.playlistName || "Unknown Playlist", // Default to "Unknown Playlist" if missing
         marked: item.marked ?? false, // Default to false if missing
+        handle: item.handle || "Unknown Handle", // Default to "Unknown Handle" if missing
     };
 }).filter((item) => {
     // Log a warning for invalid geocode but include the item
