@@ -74,9 +74,14 @@ const allPlaylists = Array.from(
     return { id: playlistId, name: playlistName };
 });
 
+// Extract all unique handles from VideoData
+const allHandles = Array.from(new Set(VideoData.map((item) => item.handle || "Unknown Handle")));
+
 let App = () => {
     // Active video that is highlighted on the screen
     const [activeVideo, setActiveVideo] = useState("");
+    // Selector for handle (new dropdown)
+    const [handle, setHandle] = useState("");
     // Selector for playlist (updated in sidebar)
     const [playlist, setPlaylist] = useState("");
     // Selector for text filter
@@ -98,6 +103,10 @@ let App = () => {
         // Filter data based on the sidebar selectors
         let ret: VideoInfo[] = VideoData;
 
+        if (handle !== "") {
+            ret = ret.filter((item) => item.handle === handle); // Filter by handle
+        }
+
         if (playlist !== "") {
             ret = ret.filter((item) => item.playlistId === playlist); // Filter by playlistId
         }
@@ -112,7 +121,7 @@ let App = () => {
         }
 
         return ret;
-    }, [playlist, filter]);
+    }, [handle, playlist, filter]);
 
     return (
         <div>
@@ -129,6 +138,20 @@ let App = () => {
                 showLines={showLines} // Pass the state to MapComponent
             ></MapComponent>
             <div id="filter-overlay">
+                <select
+                    name="handle-select"
+                    onChange={(changeEvent) => {
+                        setHandle(changeEvent.target.value);
+                    }}
+                >
+                    <option value="">All Handles</option>
+                    {allHandles.map((handle) => (
+                        <option value={handle} key={handle}>
+                            {handle}
+                        </option>
+                    ))}
+                </select>
+
                 <select
                     name="playlist-select"
                     onChange={(changeEvent) => {
